@@ -2,24 +2,26 @@ import { useState, useEffect } from 'react';
 
 export async function fetchPlaylistTracks(playlistId: string) {
   try {
-
-
     const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
     const clientSecret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
-      throw new Error("Missing Spotify Client ID or Secret in environment variables.");
+      throw new Error(
+        'Missing Spotify Client ID or Secret in environment variables.'
+      );
     }
 
-
-    const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
-      },
-      body: 'grant_type=client_credentials',
-    });
+    const tokenResponse = await fetch(
+      'https://accounts.spotify.com/api/token',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+        },
+        body: 'grant_type=client_credentials',
+      }
+    );
 
     if (!tokenResponse.ok) {
       throw new Error(`Token request failed: ${tokenResponse.statusText}`);
@@ -39,27 +41,36 @@ export async function fetchPlaylistTracks(playlistId: string) {
     );
 
     if (!playlistResponse.ok) {
-      throw new Error(`Playlist request failed: ${playlistResponse.statusText}`);
+      throw new Error(
+        `Playlist request failed: ${playlistResponse.statusText}`
+      );
     }
 
     const playlistData = await playlistResponse.json();
-    
+
     // Debugging: Print the API response structure
-    console.log("fetchPlaylistTracks API response:", playlistData);
+    console.log('fetchPlaylistTracks API response:', playlistData);
 
     // Extract track URIs
-    const tracks = playlistData?.items?.map((item: any) => item?.track?.uri).filter(Boolean) || [];
+    const tracks =
+      playlistData?.items
+        ?.map((item: any) => item?.track?.uri)
+        .filter(Boolean) || [];
 
-    console.log("Extracted track URIs:", tracks); // Log extracted track URIs
+    console.log('Extracted track URIs:', tracks); // Log extracted track URIs
 
     return tracks;
   } catch (error) {
-    console.error("Error fetching playlist tracks:", error);
+    console.error('Error fetching playlist tracks:', error);
     return [];
   }
 }
 
-export default function PlaylistComponent({ playlistId }: { playlistId: string }) {
+export default function PlaylistComponent({
+  playlistId,
+}: {
+  playlistId: string;
+}) {
   const clientId = '2b8f8232d55e4a8e8fa2a8010337898d';
   const clientSecret = 'b9672855185a45aba8f34f2080eb2731';
 
@@ -94,9 +105,9 @@ export async function random_song(playlistId: string): Promise<string> {
     const tracks = await fetchPlaylistTracks(playlistId);
 
     if (!tracks || tracks.length === 0) {
-      console.log(tracks)
-      console.error("No tracks found in playlist");
-      return "";
+      console.log(tracks);
+      console.error('No tracks found in playlist');
+      return '';
     }
 
     // Get a random track from the list
@@ -105,22 +116,21 @@ export async function random_song(playlistId: string): Promise<string> {
 
     // Debugging: Check if trackUri exists
     if (!trackUri) {
-      console.error("random_song: trackUri is undefined or null", tracks);
-      return "";
+      console.error('random_song: trackUri is undefined or null', tracks);
+      return '';
     }
 
     // Ensure trackUri follows expected format
-    if (!trackUri.includes("spotify:track:")) {
-      console.error("random_song: Unexpected trackUri format", trackUri);
-      return "";
+    if (!trackUri.includes('spotify:track:')) {
+      console.error('random_song: Unexpected trackUri format', trackUri);
+      return '';
     }
 
     // Extract track ID and construct a valid Spotify URL
-    const trackId = trackUri.split(":").pop();
+    const trackId = trackUri.split(':').pop();
     return `https://open.spotify.com/track/${trackId}`;
   } catch (error) {
-    console.error("Error fetching random song:", error);
-    return "";
+    console.error('Error fetching random song:', error);
+    return '';
   }
 }
-
