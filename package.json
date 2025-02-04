@@ -16,7 +16,7 @@
     "random": "^5.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-spotify-embed": "^latest_version"
+    "react-spotify-embed": "^2.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",
